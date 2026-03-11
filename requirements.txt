@@ -1,0 +1,16 @@
+torch
+torchvision
+torchaudio
+ultralytics
+fastapi
+uvicorn
+opencv-python
+numpy
+pandas
+matplotlib
+scikit-learn
+transformers
+gymnasium
+stable-baselines3
+python-multipart
+sh
