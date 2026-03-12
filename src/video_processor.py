@@ -1,7 +1,7 @@
 import cv2
-from models.yolo_detector import YOLODetector
-from models.cnn_sign_classifier import TrafficSignCNN
-from models.nlp_interpreter import NLPInterpreter
+from src.models.yolo_detector import YOLODetector
+from src.models.cnn_sign_classifier import TrafficSignCNN
+from src.models.nlp_interpreter import NLPInterpreter
 import torch
 from torchvision import transforms
 from PIL import Image

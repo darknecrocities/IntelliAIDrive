@@ -1,1 +1,5 @@
-dataset/*.mp4
+data/*.mp4
+data/car/
+experiments/runs/
+*.pt
+*.zip

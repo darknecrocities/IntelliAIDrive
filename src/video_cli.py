@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.video_processor import VideoProcessor
 
-def main(video_path="dataset/video.mp4"):
+def main(video_path="data/video.mp4"):
     if not os.path.exists(video_path):
         print(f"Error: {video_path} not found.")
         return
@@ -59,5 +59,5 @@ def main(video_path="dataset/video.mp4"):
     print("Execution finished.")
 
 if __name__ == "__main__":
-    path = sys.argv[1] if len(sys.argv) > 1 else "dataset/sample3.mp4"
+    path = sys.argv[1] if len(sys.argv) > 1 else "data/sample3.mp4"
     main(path)

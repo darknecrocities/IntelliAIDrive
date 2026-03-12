@@ -7,7 +7,7 @@ def test():
     model_path = 'experiments/runs/detect/train2/weights/best.pt'
     custom_model = YOLO(model_path)
 
-    cap = cv2.VideoCapture('dataset/sample3.mp4')
+    cap = cv2.VideoCapture('data/sample3.mp4')
     # Read a few frames in to avoid a blank start
     for _ in range(30):
         ret, frame = cap.read()
@@ -30,3 +30,4 @@ def test():
 
 if __name__ == '__main__':
     test()
+

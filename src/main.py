@@ -8,12 +8,13 @@ import cv2
 import numpy as np
 import os
 
+
 app = FastAPI(title="IntelliDrive AI API")
 
 # Initialize models
 env = DrivingEnv()
 agent = DQNAgent(2, 5)
-processor = VideoProcessor("dataset/sample3.mp4")
+processor = VideoProcessor("data/sample3.mp4")
 
 @app.post("/predict-image")
 async def predict_image(file: UploadFile = File(...)):
@@ -23,7 +24,7 @@ async def predict_image(file: UploadFile = File(...)):
     return {"status": "success", "detections": []}
 
 def gen_frames():
-    cap = cv2.VideoCapture("dataset/sample3.mp4")
+    cap = cv2.VideoCapture("data/sample3.mp4")
     while True:
         success, frame = cap.read()
         if not success:

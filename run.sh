@@ -3,8 +3,8 @@
 echo "🚀 Starting IntelliDrive AI: Full-Stack Neural System"
 
 # Check for dataset
-if [ ! -f "dataset/video.mp4" ]; then
-    echo "⚠️ Warning: dataset/video.mp4 not found. Video feed will show loading state."
+if [ ! -f "data/video.mp4" ]; then
+    echo "⚠️ Warning: data/video.mp4 not found. Video feed will show loading state."
 fi
 
 # Install backend dependencies
