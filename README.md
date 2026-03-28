@@ -99,14 +99,6 @@ python app/intellidrive.py
 
 ---
 
-### Install dependencies manually
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
 ## System Architecture Diagram
 
 ```mermaid
