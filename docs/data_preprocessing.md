@@ -1,30 +1,47 @@
-# Data Preparation & Preprocessing: IntelliAIDrive Vision Pipeline
+# Data Preprocessing Notes: IntelliAIDrive
 
-## 1. Dataset Overview
-For the visual perception component of IntelliAIDrive, we utilized the Traffic Signs Detection dataset sourced from Kaggle (`pkdarabi/cardetection`). This dataset includes a diverse set of real-world traffic sign classes (such as speed limits, stop signs, and turn directions) captured in various public road environments. Because the dataset features street signs rather than individuals, PII and human consent risks are minimized. The high variance in this dataset ensures our CNN backbone can generalize to the complex environmental states required by the RL agent.
+## Overview
+This document summarizes the dataset preparation and preprocessing steps used in IntelliAIDrive. The project uses a traffic sign classification dataset for academic experimentation in traffic sign recognition and simulation-based reinforcement learning.
 
-### Exploratory Data Analysis (Class Distribution)
-Before processing the images through our pipeline, we conducted an exploratory data analysis (EDA) to evaluate the dataset for class imbalances. As shown in the distribution chart below, we mapped the frequency of each traffic sign class to ensure our training splits maintained proportional representation, preventing the CNN from over-indexing on the most common signs.
+## Dataset Summary
+- **Dataset Source:** Kaggle Traffic Sign Dataset
+- **Number of Classes:** 58
+- **Training Images:** 4,170
+- **Test Images:** 1,994
+- **Image Size Used for Training:** 64 × 64 pixels
 
-![Traffic Sign Class Distribution](./assets/class_distribution.png)
+The dataset consists of labeled traffic sign images organized by class. Each class corresponds to a specific traffic sign category.
 
-## 2. Image Cleaning & Validation (YOLOv8n Detection)
-Unlike tabular datasets, our cleaning process focused on spatial localization and filtering out low-confidence data before it reached the decision-making agent.
-* **Localization & Cropping:** We utilized a fine-tuned YOLOv8n model to detect and crop only the relevant traffic signs from the broader, noisy environmental frames.
-* **Confidence Filtering:** Predictions falling below our confidence threshold were filtered out to prevent passing "noisy" or incorrect visual states to the agent, which could result in critical system failures (e.g., misclassifying a speed limit as a stop sign). 
+## Preprocessing Steps
 
-![YOLOv8 Detection and Filtering](./assets/yolo_filtering.png)
+### 1. Image Organization
+The dataset was organized by class to support supervised traffic sign classification. Images were grouped into class-specific folders, allowing the model to learn category-level differences across the 58 classes.
 
-## 3. Image Transformation & Embedding (ResNet18 Feature Extractor)
-To bridge the gap between raw pixel data and our Proximal Policy Optimization (PPO) agent, the localized image crops underwent strict mathematical transformations. 
-1. **Resizing & Normalization:** All YOLO-cropped images were resized to uniform dimensions and normalized using standard ImageNet metrics to ensure consistent tensor shapes.
-2. **Dense Vector Embedding:** Instead of standard classification, we modified a ResNet18 architecture by replacing its final classification head with an Identity layer. This preprocessing step successfully converts the raw visual crops into dense, 512-dimensional feature embeddings. This high-fidelity vector serves as the mathematically reliable observation space for the RL agent, significantly reducing computational overhead.
+### 2. Image Resizing
+All images were resized to **64 × 64 pixels** before training. This input resolution was selected to reduce computational cost while preserving the relevant visual structure of traffic sign symbols and shapes.
 
-![PyTorch Image Transformations](./assets/cnn_transforms.png)
+### 3. Train-Validation Split
+For the YOLOv8n classification stage, the training data was split using an approximate **80:20 train-validation ratio**, resulting in:
+- **3,313 training images**
+- **857 validation images**
 
-## 4. Label Encoding for RL Policy
-The PPO reinforcement learning agent requires numeric integers to calculate optimal driving actions, not string text. 
-* **Label Mapping:** We encoded the categorical text labels (e.g., "Stop", "Speed Limit") into distinct integer classes.
-* **Reward Shaping Integration:** These numeric encodings are directly integrated into our custom Gymnasium environment. When the agent maps the 512-dimensional embedding to the correct encoded integer action, it receives a $+5$ reward. Incorrect mapping results in a $-3$ penalty, mathematically forcing stable policy updates over the training cycle.
+This helped monitor learning progress and reduced the risk of evaluating the model only on seen samples.
 
-![Class Label Encoding](./assets/label_encoding.png)
+### 4. Test Set Usage
+A separate test set containing **1,994 images** was used for final evaluation. This ensured that the reported performance metrics reflected the model’s behavior on unseen data.
+
+### 5. Data Consistency
+The preprocessing pipeline maintained class-level consistency across the dataset. This reduced leakage between splits and supported more reliable evaluation of the classifier’s generalization ability.
+
+## Training-Oriented Preparation
+The preprocessed images were used as input to a **YOLOv8n classification model**. Because the project focused on traffic sign classification rather than bounding box localization, the preprocessing pipeline was designed for whole-image classification rather than object detection.
+
+## Notes on Augmentation
+Training included built-in augmentation settings available in the training framework, such as standard color and spatial variation. These augmentations were intended to improve generalization and reduce overfitting under controlled academic conditions.
+
+## Summary
+The final preprocessing setup supported a lightweight and efficient classification pipeline by:
+- organizing images by class
+- resizing all inputs to 64 × 64
+- maintaining train, validation, and test separation
+- supporting reproducible model training and evaluation

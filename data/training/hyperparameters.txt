@@ -1,0 +1,32 @@
+Hyperparameter Analysis for YOLOv8 Classification Model
+The YOLOv8 classification model was trained with the following key hyperparameters:
+
+- epochs=15: The model was trained for 15 full passes over the dataset. This number is generally chosen to allow sufficient learning without excessive overfitting, though optimal epochs can vary.
+- imgsz=64: The input image size was set to 64x64 pixels. This is a common size for classification tasks and helps reduce computational cost, especially for smaller models like yolov8n-cls.
+- batch=64: A batch size of 64 images was used during training. This means 64 images were processed together before the model's weights were updated. A larger batch size can lead to more stable gradients but might require more memory.
+- model='yolov8n-cls.pt': A pre-trained yolov8n-cls (nano classification) model was used as a starting point. Leveraging pre-trained weights on large datasets (like ImageNet) significantly speeds up convergence and improves performance on new tasks, especially with smaller datasets.
+- optimizer=AdamW(lr=0.000161, momentum=0.9): The AdamW optimizer was automatically selected with an initial learning rate of 0.000161 and a momentum of 0.9. AdamW is a robust optimizer suitable for deep learning tasks, known for its adaptive learning rates and weight decay regularization.
+- Data Augmentation: Several augmentation techniques were applied during training, including hsv_h=0.015, hsv_s=0.7, hsv_v=0.4 (for hue, saturation, value adjustments), fliplr=0.5 (50% horizontal flip), and translate=0.1 (10% image translation). These help the model generalize better by exposing it to varied versions of the training images.
+These hyperparameters were crucial in guiding the model's learning process and optimizing its ability to classify traffic signs effectively.
+
+Hyperparameter Analysis for CNN Classifier (Standalone)
+The standalone CNN Classifier, built on ResNet-18, utilized the following key hyperparameters during its supervised training:
+
+- EPOCHS=10: The CNN was trained for 10 epochs. This was sufficient for the model to achieve high accuracy due to the effective feature extraction of ResNet-18.
+- batch_size=64: Images were processed in batches of 64 during training, balancing computational efficiency and gradient stability.
+- optimizer=optim.Adam(cnn.parameters(), lr=1e-4): The Adam optimizer with a learning rate of 0.0001 was used for training the CNN, effectively updating its weights.
+- criterion=nn.CrossEntropyLoss(): Cross-entropy loss was used as the objective function, which is standard for multi-class classification problems.
+- Pre-trained weights (models.resnet18(weights="DEFAULT")): The ResNet-18 model was initialized with weights pre-trained on a large dataset (ImageNet), which significantly boosts performance and reduces training time on a new dataset.
+- Image Transform (transforms.Resize((64,64))): Input images were resized to 64x64 pixels and converted to tensors, matching the expected input format for the ResNet-18 model.
+
+Hyperparameter Analysis for RL Agent (PPO with CNN Features)
+The Reinforcement Learning agent, employing the PPO algorithm and CNN-extracted features, was configured with these key hyperparameters:
+
+- MlpPolicy: A Multi-Layer Perceptron (MLP) policy network was used, which is suitable for handling the continuous feature vectors extracted by the CNN.
+- learning_rate=1e-4: A learning rate of 0.0001 for the PPO optimizer, controlling the step size of policy updates.
+- batch_size=256: The experience collected for policy updates was processed in batches of 256, influencing the stability and speed of learning.
+- n_steps=512: The number of steps (or experiences) collected from the environment before performing a policy update. A larger n_steps means more experience is gathered per update, potentially leading to more stable learning.
+- gamma=0.95: The discount factor, indicating the importance of future rewards. A value of 0.95 means future rewards are moderately discounted.
+- total_timesteps=500000: The total number of interactions (steps) the agent performed with the environment during training, defining the overall training duration.
+Observation Space (spaces.Box(low=-5, high=5, shape=(feature_dim,), dtype=np.float32)): The agent observes a feature_dim-dimensional vector (512 in this case) representing the extracted features from the CNN, with values normalized between -5 and 5.
+Action Space (spaces.Discrete(NUM_CLASSES)): The agent chooses among NUM_CLASSES (58) discrete actions, each corresponding to a traffic sign class.

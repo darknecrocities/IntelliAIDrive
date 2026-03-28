@@ -59,5 +59,5 @@ Use IntelliAIDrive only for:
 
 Do not use IntelliAIDrive for:
 - real-world autonomous driving
-- driver assistance in public roads
+- driver assistance on public roads
 - any deployment involving human safety
